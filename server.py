@@ -1,7 +1,8 @@
 from flask import Flask, jsonify
 import os
 
-app = Flask(__name__)
+app = (
+    Flask(__name__))
 server_id = os.environ.get('SERVER_ID', 'Unknown')
 
 @app.route('/home', methods=['GET'])
