@@ -1,7 +1,7 @@
 
 # Customized Load Balancer 
 
-This project invloves the creation of a Customized Load Balancer designed for distributed systems. It demonstrates key concepts including:
+This project involves the creation of a Customized Load Balancer designed for distributed systems. It demonstrates key concepts including:
 - A Dockerized HTTP server written with Flask
 - A consistent hashing module to distribute requests
 - Early testing and screenshots
