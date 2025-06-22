@@ -9,7 +9,7 @@ This project involves the creation of a Customized Load Balancer designed for di
 
 ---
 
-## ✅ Task 1: Flask Server
+##  Task 1: Flask Server
 
 ### Features
 - `/home` endpoint returns a JSON message with a unique server ID.
@@ -29,7 +29,7 @@ Server is implemented in `server.py`. Example response from `/home`:
 
 ---
 
-## 🐳 Dockerfile
+## Dockerfile
 
 The Flask server is containerized using the following Dockerfile:
 
@@ -44,7 +44,7 @@ CMD ["python", "server.py"]
 
 ---
 
-## 🚀 Port Usage
+## Port Usage
 
 **Note**: Port `5000` is required by the assignment, but on macOS it was already occupied by a system service (Control Center / AirPlay).  
 ✅ For local development, we used **port `5050`** temporarily:
@@ -56,7 +56,7 @@ This will be reverted to `5000` before final testing in Ubuntu.
 
 ---
 
-## 🧪 Screenshots
+## Screenshots
 
 ### `/home` endpoint
 ![Home Endpoint](Screenshots/home.png)
@@ -66,7 +66,7 @@ This will be reverted to `5000` before final testing in Ubuntu.
 
 ---
 
-## ✅ Task 2: Consistent Hashing
+## Task 2: Consistent Hashing
 
 Implemented in `hashing/consistent_hash.py`. Features:
 - 512-slot consistent hash ring
