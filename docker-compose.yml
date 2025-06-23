@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  load_balancer:
+    build: ./load_balancer
+    container_name: load_balancer_main
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    networks:
+      net1:
+        aliases:
+          - lb
+
+networks:
+  net1:
+    driver: bridge

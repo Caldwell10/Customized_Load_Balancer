@@ -1,4 +1,4 @@
-from consistent_hash import ConsistentHashMap
+from load_balancer.consistent_hash import ConsistentHashMap
 
 # Initialize
 hash_map = ConsistentHashMap()
