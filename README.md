@@ -84,14 +84,28 @@ Implemented in `hashing/consistent_hash.py`. Features:
 
 ## 📂 Repository Structure (so far)
 ```
-customizable-load-balancer/
-├── Dockerfile
-├── server.py
-├── hashing/
-│   └── consistent_hash.py
-├── Screenshots/
-│   ├── home.png
-│   └── heartbeat.png
+Customized_Load_Balancer/
+│
+├── load_balancer/
+│   ├── load_balancer.py        
+│   ├── consistent_hash.py      
+│   ├── test_hashing.py         
+│   ├── venv/                   
+│   └── __init__.py             
+│
+├── server/
+│   ├── server.py               
+│   ├── Dockerfile              
+│
+├── test/
+│   ├── async_client_test.py    
+│   └── plot_results.py         
+│
+├── docker-compose.yml          
+├── README.md                   
+├── requirements.txt            
+└── .gitignore                  
+
 ```
 
 ---
