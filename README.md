@@ -9,7 +9,7 @@ This project involves the creation of a Customized Load Balancer designed for di
 
 ---
 
-##  Task 1: Flask Server
+##  Flask Server
 
 ### Features
 - `/home` endpoint returns a JSON message with a unique server ID.
@@ -66,7 +66,7 @@ This will be reverted to `5000` before final testing in Ubuntu.
 
 ---
 
-## Task 2: Consistent Hashing
+##  Consistent Hashing
 
 Implemented in `hashing/consistent_hash.py`. Features:
 - 512-slot consistent hash ring
