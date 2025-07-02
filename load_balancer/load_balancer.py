@@ -16,25 +16,29 @@ def generate_hostname():
 def spawn_container(server_id, hostname=None):
     if hostname is None:
         hostname = generate_hostname()
+    print(f"[INFO] Spawning container: ServerID={server_id}, Hostname={hostname}")
     subprocess.run([
         "docker", "run", "--rm", "-d",
         "--name", hostname,
         "--network", "net1",
         "--network-alias", hostname,
         "-e", f"SERVER_ID={server_id}",
-        "server_img"  # Build image from ./server/Dockerfile
+        "server_img"
     ])
     ch_map.add_server(server_id)
     active_containers[server_id] = hostname
+    print(f"[INFO] Active containers after spawn: {active_containers}\n")
     return hostname
 
 def remove_container(server_id):
     hostname = active_containers.get(server_id)
     if hostname:
+        print(f"[INFO] Removing container: ServerID={server_id}, Hostname={hostname}")
         subprocess.run(["docker", "stop", hostname])
         subprocess.run(["docker", "rm", hostname])
         ch_map.remove_server(server_id)
         del active_containers[server_id]
+        print(f"[INFO] Active containers after removal: {active_containers}\n")
 
 @app.route("/rep", methods=["GET"])
 def get_replicas():
@@ -81,6 +85,7 @@ def proxy(endpoint):
     rid = random.randint(100000, 999999)
     server_id = ch_map.get_server(rid)
     hostname = active_containers.get(server_id)
+    print(f"[INFO] Incoming request for '/{endpoint}' routed to ServerID={server_id}, Hostname={hostname}")
     if not hostname:
         return jsonify({"message": "No server available", "status": "failure"}), 503
     try:
@@ -88,10 +93,12 @@ def proxy(endpoint):
         url = f"http://{hostname}:5050/{endpoint}"
         res = requests.get(url)
         return jsonify(res.json()), res.status_code
-    except:
+    except Exception as e:
+        print(f"[ERROR] Failed to route request to {hostname}: {e}")
         return jsonify({"message": f"<Error> '/{endpoint}' endpoint does not exist", "status": "failure"}), 400
 
 if __name__ == "__main__":
     for sid in range(1, N+1):
         spawn_container(sid, f"Server{sid}")
+    print("[INFO] Load balancer started on port 5000")
     app.run(host="0.0.0.0", port=5000)

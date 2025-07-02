@@ -16,4 +16,5 @@ services:
 
 networks:
   net1:
-    driver: bridge
+    external: true
+
