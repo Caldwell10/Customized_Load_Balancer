@@ -7,6 +7,7 @@ COPY load_balancer.py .
 
 RUN pip install flask requests
 
-CMD ["python", "load_balancer.py"]
+RUN apt-get update && apt-get install -y docker.io
 
+CMD ["python", "load_balancer.py"]
 
