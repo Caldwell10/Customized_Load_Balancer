@@ -46,8 +46,7 @@ CMD ["python", "server.py"]
 
 ## Port Usage
 
-**Note**: Port `5000` is required by the assignment, but on macOS it was already occupied by a system service (Control Center / AirPlay).  
-✅ For local development, we used **port `5050`** temporarily:
+For local development, we used **port `5050`** :
 ```python
 app.run(host='0.0.0.0', port=5050)
 ```
