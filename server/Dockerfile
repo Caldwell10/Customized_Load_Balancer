@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY server.py .
 
-RUN pip install flask
+RUN apt-get update && apt-get install -y curl && pip install flask
 
 ENV SERVER_ID=1
 
