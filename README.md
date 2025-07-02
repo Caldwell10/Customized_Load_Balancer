@@ -5,7 +5,7 @@ This project involves the creation of a Customized Load Balancer designed for di
 - A Dockerized HTTP server written with Flask
 - A consistent hashing module to distribute requests
 - Early testing and screenshots
-- Port considerations due to system-level conflicts 
+- Port considerations  
 
 ---
 
