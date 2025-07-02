@@ -19,7 +19,7 @@ def spawn_container(server_id, hostname=None):
     subprocess.run([
         "docker", "run", "--rm", "-d",
         "--name", hostname,
-        "--network", "net1",
+        "--network", "customized_load_balancer_net1",
         "--network-alias", hostname,
         "-e", f"SERVER_ID={server_id}",
         "server_img"  # Build image from ./server/Dockerfile
