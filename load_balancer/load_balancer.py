@@ -1,14 +1,23 @@
 from flask import Flask, request, jsonify
 import random, string, subprocess
 from consistent_hash import ConsistentHashMap
+import hashlib
+from threading import Lock
+import requests
+import threading
+import time
 
 app = Flask(__name__)
-ch_map = ConsistentHashMap()
+ch_map = ConsistentHashMap(num_slots=512, virtual_servers=9)
 N = 3  # default replicas
 container_prefix = "Server"
 
 # Track active containers
 active_containers = {}
+
+# Round Robin state
+rr_index = 0
+rr_lock = Lock()
 
 def generate_hostname():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=6))
@@ -39,6 +48,23 @@ def remove_container(server_id):
         ch_map.remove_server(server_id)
         del active_containers[server_id]
         print(f"[INFO] Active containers after removal: {active_containers}\n")
+
+# Heartbeat checker function
+def heartbeat_checker(interval=5, timeout=2):
+    while True:
+        time.sleep(interval)
+        for server_id, hostname in list(active_containers.items()):
+            try:
+                url = f"http://{hostname}:5001/heartbeat"
+                res = requests.get(url, timeout=timeout)
+                if res.status_code != 200:
+                    raise Exception("Heartbeat failed")
+            except Exception:
+                print(f"[ALERT] Server {server_id} ({hostname}) failed heartbeat check. Removing and respawning...")
+                remove_container(server_id)
+                new_server_id = max(active_containers.keys(), default=0) + 1
+                spawn_container(new_server_id)
+                print(f"[INFO] Spawned new server with ID {new_server_id}")
 
 @app.route("/rep", methods=["GET"])
 def get_replicas():
@@ -80,25 +106,61 @@ def remove_replicas():
         remove_container(sid)
     return get_replicas()
 
+def get_request_id(path):
+    return int(hashlib.sha256(path.encode()).hexdigest(), 16) % (10**6)
+
+def get_next_server_rr():
+    global rr_index
+    with rr_lock:
+        if not active_containers:
+            return None
+        server_ids = sorted(active_containers.keys())
+        server_id = server_ids[rr_index % len(server_ids)]
+        rr_index += 1
+        return server_id
+
+def get_server_by_hash(path):
+    rid = get_request_id(path)
+    return ch_map.get_server(rid)
+
 @app.route('/<path:endpoint>', methods=["GET"])
 def proxy(endpoint):
-    rid = random.randint(100000, 999999)
-    server_id = ch_map.get_server(rid)
+    server_id = get_next_server_rr()
     hostname = active_containers.get(server_id)
-    print(f"[INFO] Incoming request for '/{endpoint}' routed to ServerID={server_id}, Hostname={hostname}")
+
     if not hostname:
         return jsonify({"message": "No server available", "status": "failure"}), 503
+
     try:
-        import requests
-        url = f"http://{hostname}:5050/{endpoint}"
+        url = f"http://{hostname}:5001/{endpoint}"
+
+        if request.query_string:
+            url = f"{url}?{request.query_string.decode()}"
+
+        print(f"[INFO] Proxying to URL: {url}")
         res = requests.get(url)
-        return jsonify(res.json()), res.status_code
-    except Exception as e:
+
+        print(f"[DEBUG] Response status: {res.status_code}")
+        print(f"[DEBUG] Response content: '{res.text}'")
+
+        if not res.content.strip():
+            return "", res.status_code
+
+        try:
+            return jsonify(res.json()), res.status_code
+        except ValueError:
+            return res.text, res.status_code
+
+    except requests.exceptions.RequestException as e:
         print(f"[ERROR] Failed to route request to {hostname}: {e}")
-        return jsonify({"message": f"<Error> '/{endpoint}' endpoint does not exist", "status": "failure"}), 400
+        return jsonify({"message": "Request exception occurred", "status": "failure"}), 400
 
 if __name__ == "__main__":
     for sid in range(1, N+1):
         spawn_container(sid, f"Server{sid}")
-    print("[INFO] Load balancer started on port 5000")
-    app.run(host="0.0.0.0", port=5000)
+
+    # Start heartbeat checker
+    threading.Thread(target=heartbeat_checker, daemon=True).start()
+
+    print("[INFO] Load balancer started on port 5001")
+    app.run(host="0.0.0.0", port=5001)

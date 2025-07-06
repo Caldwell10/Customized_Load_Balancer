@@ -1,7 +1,7 @@
 import bisect
 
 class ConsistentHashMap:
-    def __init__(self, num_slots=512, virtual_servers=9):
+    def __init__(self, num_slots=4096, virtual_servers=100):
         self.M = num_slots
         self.K = virtual_servers
         self.ring = dict()
@@ -20,8 +20,11 @@ class ConsistentHashMap:
         self.servers.add(server_id)
         for j in range(self.K):
             slot = self._hash_virtual(server_id, j)
+            step = 1
+            # Quadratic probing for collision resolution
             while slot in self.ring:
-                slot = (slot + 1) % self.M
+                slot = (slot + step * step) % self.M
+                step += 1
             self.ring[slot] = server_id
             bisect.insort(self.sorted_keys, slot)
 
