@@ -1,4 +1,37 @@
+# Python
 venv/
+myenv/
+env/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+
+# IDE Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+results.txt
+*.log
+
+# External Tools
+.qodo/
+
+# Docker
+.docker/
