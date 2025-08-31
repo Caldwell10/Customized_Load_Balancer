@@ -1,9 +1,9 @@
 
 # Distributed Load Balancer with Consistent Hashing
 
-> **For Interviews**: This project demonstrates advanced distributed systems concepts including consistent hashing, microservices architecture, Docker containerization, and performance analysis.
+This project demonstrates advanced distributed systems concepts including consistent hashing, microservices architecture, Docker containerization, and performance analysis.
 
-A production-ready load balancer implementation that efficiently distributes client requests across multiple server replicas using consistent hashing. Built as part of **ICS 4104: Distributed Systems** coursework.
+A production-ready load balancer implementation that efficiently distributes client requests across multiple server replicas using consistent hashing. 
 
 ## 🏗️ **Architecture Overview**
 
@@ -201,29 +201,6 @@ def spawn_container(server_id, hostname=None):
 - **Safe container lifecycle operations**
 
 ---
-
-## 🎯 **Interview Discussion Points**
-
-### **Distributed Systems Concepts**
-1. **Why consistent hashing?** - Minimizes data movement during scaling
-2. **Virtual servers benefit** - Better load distribution and fault tolerance
-3. **Hash collision handling** - Quadratic probing vs linear probing trade-offs
-4. **Failure recovery strategy** - Automatic container spawning and health checks
-
-### **System Design Decisions**
-1. **Docker vs VM trade-offs** - Resource efficiency and isolation
-2. **API design patterns** - RESTful endpoints and error handling
-3. **Performance optimization** - Bisect algorithm for O(log N) lookups
-4. **Monitoring and observability** - Health checks and metrics collection
-
-### **Scalability & Reliability**
-1. **Horizontal scaling approach** - Adding/removing servers dynamically
-2. **Load balancing algorithms** - Consistent hashing vs round-robin
-3. **Failure modes and recovery** - Container crashes and network partitions
-4. **Performance under load** - Async request handling and bottlenecks
-
----
-
 ## 📁 **Project Structure**
 ```
 ├── load_balancer/
@@ -248,7 +225,3 @@ def spawn_container(server_id, hostname=None):
 - **Performance testing** is crucial for validating distributed system behavior
 
 ---
-
-**Built with**: Python, Flask, Docker, Docker Compose  
-**Assignment**: ICS 4104 Distributed Systems  
-**Focus**: Load balancing, consistent hashing, containerization, performance analysis
